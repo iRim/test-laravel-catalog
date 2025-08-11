@@ -28,8 +28,6 @@ class CartController extends Controller
                 'total_amount' => 0
             ]);
 
-        ;
-
         $order
             ->products()
             ->sync(
@@ -39,6 +37,12 @@ class CartController extends Controller
                     ])
                     ->all()
             );
+
+        $order->update([
+            'total_amount' => $order
+                ->products
+                ->sum(fn($p) => $p->pivot->quantity * $p->price)
+        ]);
 
         return redirect()->route('orders.index');
     }

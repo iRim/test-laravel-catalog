@@ -4,10 +4,10 @@ import { Link, router } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
 
 const props = defineProps({
-    products: Array,
+    orders: Array,
 });
 
-const deleteProduct = (id) => {
+const deleteOrder = (id) => {
     if (confirm('Are you sure you want to delete this product?')) {
         router.delete(route('products.destroy', id));
     }
@@ -25,21 +25,18 @@ const deleteProduct = (id) => {
                     <table class="w-full table-auto border-collapse border border-gray-300 border-white">
                         <thead>
                             <th>Name</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
+                            <th>Email</th>
+                            <th>Total amount</th>
                             <th>Action</th>
                         </thead>
-                        <tbody v-if="products?.length">
-                            <tr v-for="(product, index) in props.products" :key="index" class="border-t">
-                                <td class="p-1">
-                                    <b class="inline-block w-full">{{ product.name }}</b>
-                                    <small>{{ product.description }}</small>
-                                </td>
-                                <td class="text-center">{{ product.price }}</td>
-                                <td class="text-center">{{ product.stock_quantity }}</td>
+                        <tbody v-if="orders?.length">
+                            <tr v-for="(order, index) in props.orders" :key="index" class="border-t">
+                                <td class="p-1">{{ order.customer_name }}</td>
+                                <td class="text-center">{{ order.customer_email }}</td>
+                                <td class="text-center">{{ order.total_amount }}</td>
                                 <td class="w-30 text-center">
-                                    <Link :href="route('products.edit', { product: product.id })" class="mr-1"> Edit </Link>
-                                    <Link href="#" @click="deleteProduct(product.id)">Delete</Link>
+                                    <Link :href="route('orders.edit', { order: order.id })" class="mr-1"> Edit </Link>
+                                    <Link href="#" @click="deleteOrder(order.id)">Delete</Link>
                                 </td>
                             </tr>
                         </tbody>
