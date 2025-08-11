@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $table = 'paroducts';
-    protected $timestamps = false;
+    protected $table = 'products';
+    public $timestamps = false;
     protected $fillable = [
         'name',
         'description',

@@ -5,21 +5,26 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { defineProps } from 'vue';
+
+const props = defineProps({
+    product: Object,
+});
 
 const form = useForm({
-    name: '',
-    description: '',
-    price: 0,
-    stock_quantity: 0,
+    name: props.product.name || '',
+    description: props.product.description || '',
+    price: props.product.price || 0,
+    stock_quantity: props.product.stock_quantity || 0,
 });
 
 const submit = () => {
-    form.post(route('products.store'));
+    form.put(route('products.update', { product: props.product.id }));
 };
 </script>
 
 <template>
-    <Head title="Add product" />
+    <Head :title="'Edit product #' + props.product.id" />
     <div
         class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a] dark:text-[#EDEDEC]"
     >
@@ -63,7 +68,7 @@ const submit = () => {
 
                 <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    Add product
+                    Edit product
                 </Button>
             </div>
         </form>

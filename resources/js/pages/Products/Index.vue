@@ -1,4 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Link, router } from '@inertiajs/vue3';
+import { defineProps } from 'vue';
+
+const props = defineProps({
+    products: Array,
+});
+
+const deleteProduct = (id) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+        router.delete(route('products.destroy', id));
+    }
+};
+</script>
 
 <template>
     <Head title="Products list" />
@@ -13,17 +26,36 @@
                 </Link>
             </nav>
         </header>
-        <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
-                <div
-                    class="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC]"
-                >
-                    <div class="flex">
-                        <h1 class="w-1/2">Products</h1>
-                        <div class="w-1/2 text-right">
-                            <button class="inline-flex items-center gap-2">Add product</button>
-                        </div>
-                    </div>
+        <div class="flex w-full justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
+            <main class="flex w-full max-w-4xl flex-col-reverse overflow-hidden rounded-lg lg:flex-row">
+                <div class="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-6 text-[13px] leading-[20px] dark:bg-[#161615] dark:text-[#EDEDEC]">
+                    <table class="w-full table-auto border-collapse border border-gray-300 border-white">
+                        <thead>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody v-if="products?.length">
+                            <tr v-for="(product, index) in props.products" :key="index" class="border-t">
+                                <td class="p-1">
+                                    <b class="inline-block w-full">{{ product.name }}</b>
+                                    <small>{{ product.description }}</small>
+                                </td>
+                                <td class="text-center">{{ product.price }}</td>
+                                <td class="text-center">{{ product.stock_quantity }}</td>
+                                <td class="w-30 text-center">
+                                    <Link :href="route('products.edit', { product: product.id })" class="mr-1"> Edit </Link>
+                                    <Link href="#" @click="deleteProduct(product.id)">Delete</Link>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody v-else>
+                            <tr class="border-t">
+                                <td colspan="4">Empty!</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </main>
         </div>
