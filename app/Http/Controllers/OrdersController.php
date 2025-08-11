@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Order;
 use Inertia\Response;
+use App\Models\Product;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\Orders\StoreRequest;
 use App\Http\Requests\Orders\UpdateRequest;
 
 class OrdersController extends Controller
@@ -25,7 +25,8 @@ class OrdersController extends Controller
             'order' => Order::query()
                 ->where('id', $order->id)
                 ->with('products')
-                ->first()
+                ->first(),
+            'products' => Product::query()->get()
         ]);
     }
 

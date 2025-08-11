@@ -5,11 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 
 const props = defineProps({
     order: Object,
+    products: Object,
 });
+
+const filteredProducts = ref({});
 
 console.log('props', props.order);
 
@@ -17,13 +20,24 @@ const form = useForm({
     customer_name: props.order.customer_name || '',
     customer_email: props.order.customer_email || '',
     total_amount: props.order.total_amount || 0,
+    products: Object.fromEntries(
+        Object.values(props.order.products).map((p) => [
+            p.id,
+            {
+                id: p.id,
+                quantity: p.pivot.quantity,
+            },
+        ]),
+    ),
 });
 
 const submit = () => {
     form.put(route('orders.update', { order: props.order.id }));
 };
 
-const removeProduct = (id) => {};
+const removeProduct = (id) => {
+    delete form.products[id];
+};
 </script>
 
 <template>
@@ -63,8 +77,8 @@ const removeProduct = (id) => {};
                         <th>Quantity</th>
                         <th class="w-50">Action</th>
                     </thead>
-                    <tbody v-if="order?.products?.length">
-                        <tr v-for="(product, index) in order?.products" :key="index" class="border-t">
+                    <tbody v-if="filteredProducts.length > 0">
+                        <tr v-for="(product, index) in filteredProducts" :key="index" class="border-t">
                             <td class="p-1">{{ product.name }}</td>
                             <td class="text-center">{{ product.price }}</td>
                             <td class="text-center">{{ product.pivot.quantity }}</td>
@@ -75,7 +89,7 @@ const removeProduct = (id) => {};
                                     :max="product.stock_quantity"
                                     :defaultValue="product.pivot.quantity"
                                     class="mr-2 w-25"
-                                    @change="(e) => {}"
+                                    @change="(e) => (form.products[product.id].quantity = e.target.value)"
                                 />
                                 <Button class="cursor-pointer" @click="removeProduct(product.id)">remove</Button>
                             </td>
