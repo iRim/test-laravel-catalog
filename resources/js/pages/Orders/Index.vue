@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import Header from '@/components/Header.vue';
-import { useCartStore } from '@/stores/cart';
 import { Link, router } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
-
-const cart = useCartStore();
 
 const props = defineProps({
     products: Array,
@@ -20,15 +17,8 @@ const deleteProduct = (id) => {
 <template>
     <Head title="Products list" />
     <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-        <Header>
-            <Link
-                :href="route('products.create')"
-                class="inline-block cursor-pointer rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-            >
-                Add product
-            </Link>
-        </Header>
-        <h1 class="dark:bg-[#161615] dark:text-[#EDEDEC]">Products list</h1>
+        <Header />
+        <h1 class="dark:bg-[#161615] dark:text-[#EDEDEC]">Orders list</h1>
         <div class="flex w-full justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
             <main class="flex w-full max-w-4xl flex-col-reverse overflow-hidden rounded-lg lg:flex-row">
                 <div class="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-6 text-[13px] leading-[20px] dark:bg-[#161615] dark:text-[#EDEDEC]">
@@ -39,7 +29,7 @@ const deleteProduct = (id) => {
                             <th>Quantity</th>
                             <th>Action</th>
                         </thead>
-                        <tbody v-if="props.products?.length">
+                        <tbody v-if="products?.length">
                             <tr v-for="(product, index) in props.products" :key="index" class="border-t">
                                 <td class="p-1">
                                     <b class="inline-block w-full">{{ product.name }}</b>
@@ -48,9 +38,8 @@ const deleteProduct = (id) => {
                                 <td class="text-center">{{ product.price }}</td>
                                 <td class="text-center">{{ product.stock_quantity }}</td>
                                 <td class="w-30 text-center">
-                                    <span @click="cart.add(product.id)" class="mr-1 cursor-pointer"> Buy </span>
                                     <Link :href="route('products.edit', { product: product.id })" class="mr-1"> Edit </Link>
-                                    <span @click="deleteProduct(product.id)" class="cursor-pointer"> Delete </span>
+                                    <Link href="#" @click="deleteProduct(product.id)">Delete</Link>
                                 </td>
                             </tr>
                         </tbody>
